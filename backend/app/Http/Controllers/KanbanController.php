@@ -268,4 +268,10 @@ class KanbanController extends Controller
         $member = Member::create($validated);
         return response()->json($member, 201);
     }
+
+    public function destroyMember(Member $member)
+    {
+        $member->delete();
+        return response()->json(['message' => 'Member deleted successfully']);
+    }
 }

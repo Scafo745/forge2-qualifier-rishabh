@@ -339,7 +339,21 @@ function App() {
       const data = await res.json();
       setMembers([...members, data]);
       setMemberForm({ name: '', email: '', avatar_url: '' });
-      setActiveModal(null);
+      // Keep modal open so user can manage/see new members
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteMember = async (memberId) => {
+    try {
+      await fetch(`${API_BASE}/members/${memberId}`, {
+        method: 'DELETE'
+      });
+      setMembers(members.filter(m => m.id !== memberId));
+      if (currentBoard) {
+        fetchBoardDetails(currentBoard.id);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -897,6 +911,33 @@ function App() {
                 <button type="submit" className="btn-primary">Add Member</button>
               </div>
             </form>
+
+            {members.length > 0 && (
+              <div className="members-manage-section" style={{ marginTop: '2rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1.5rem' }}>
+                <h3 className="modal-subtitle" style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#fff' }}>Existing Members</h3>
+                <div className="members-manage-list scroller" style={{ maxHeight: '200px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                  {members.map(m => (
+                    <div key={m.id} className="member-manage-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                        <img src={m.avatar_url} alt={m.name} style={{ width: '32px', height: '32px', borderRadius: '50%' }} />
+                        <div style={{ textAlign: 'left' }}>
+                          <div style={{ fontWeight: '500', color: '#fff', fontSize: '0.9rem' }}>{m.name}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>{m.email}</div>
+                        </div>
+                      </div>
+                      <button 
+                        type="button" 
+                        className="action-icon-btn delete-btn" 
+                        onClick={() => handleDeleteMember(m.id)}
+                        style={{ color: '#ef4444', padding: '0.4rem', borderRadius: '6px', cursor: 'pointer', background: 'transparent', border: 'none' }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

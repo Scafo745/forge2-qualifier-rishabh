@@ -33,3 +33,5 @@ Route::post('/tags', [KanbanController::class, 'storeTag']);
 
 Route::get('/members', [KanbanController::class, 'getMembers']);
 Route::post('/members', [KanbanController::class, 'storeMember']);
+Route::delete('/members/{member}', [KanbanController::class, 'destroyMember']);
+
