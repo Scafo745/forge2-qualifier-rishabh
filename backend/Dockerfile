@@ -1,4 +1,4 @@
-FROM php:8.3-cli-alpine
+FROM php:8.4-cli-alpine
 
 # Install SQLite dependencies and PHP extension
 RUN apk add --no-cache zip unzip git sqlite-dev && \
